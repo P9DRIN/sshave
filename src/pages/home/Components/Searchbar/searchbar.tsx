@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { MagnifyingGlass } from 'phosphor-react'
-import Image from 'next/image'
+// import Image from 'next/image'
 
 interface coordsType {
   latitude: number | null
@@ -19,15 +19,15 @@ interface addressObject {
   }
 }
 
-interface nearbyStabilishmentsProps {
-  id: string
-  name: string
-  distance: number
-  photoUrl: string
-}
-interface nearbyStabilishmentsListProps {
-  nearby: nearbyStabilishmentsProps[]
-}
+// interface nearbyStabilishmentsProps {
+//   id: string
+//   name: string
+//   distance: number
+//   photoUrl: string
+// }
+// interface nearbyStabilishmentsListProps {
+//   nearby: nearbyStabilishmentsProps[]
+// }
 
 const searchSchema = z.object({
   search: z
@@ -86,28 +86,28 @@ export function Searchbar() {
     }
   }
 
-  const nearbyStabilishmentsList: nearbyStabilishmentsListProps = {
-    nearby: [
-      {
-        id: '1',
-        name: 'Barbeiro Um',
-        distance: 2,
-        photoUrl: 'link',
-      },
-      {
-        id: '2',
-        name: 'Barbeiro Dois',
-        distance: 2.5,
-        photoUrl: 'link',
-      },
-      {
-        id: '3',
-        name: 'Barbeiro Tres',
-        distance: 0.5,
-        photoUrl: 'link',
-      },
-    ],
-  }
+  // const nearbyStabilishmentsList: nearbyStabilishmentsListProps = {
+  //   nearby: [
+  //     {
+  //       id: '1',
+  //       name: 'Barbeiro Um',
+  //       distance: 2,
+  //       photoUrl: 'link',
+  //     },
+  //     {
+  //       id: '2',
+  //       name: 'Barbeiro Dois',
+  //       distance: 2.5,
+  //       photoUrl: 'link',
+  //     },
+  //     {
+  //       id: '3',
+  //       name: 'Barbeiro Tres',
+  //       distance: 0.5,
+  //       photoUrl: 'link',
+  //     },
+  //   ],
+  // }
 
   return (
     <>

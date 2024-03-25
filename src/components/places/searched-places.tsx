@@ -30,6 +30,7 @@ export function SearchedPlaces({ authenticated }: searchedPlacesProps) {
             Barba
           </span>
         </Toggle>
+        <span>is Auth? {authenticated}</span>
       </div>
     </>
   )
