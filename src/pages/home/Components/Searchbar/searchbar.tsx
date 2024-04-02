@@ -1,11 +1,14 @@
 import { z } from 'zod'
 import axios from 'axios'
 import { MapPin } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { MagnifyingGlass } from 'phosphor-react'
-// import Image from 'next/image'
+import Image from 'next/image'
+import { Filters } from '@/pages/home/Components/Searchbar/filters'
+import { SearchContext } from '@/providers/search_provider'
+import { useRouter } from 'next/router'
 
 interface coordsType {
   latitude: number | null
@@ -19,16 +22,6 @@ interface addressObject {
   }
 }
 
-// interface nearbyStabilishmentsProps {
-//   id: string
-//   name: string
-//   distance: number
-//   photoUrl: string
-// }
-// interface nearbyStabilishmentsListProps {
-//   nearby: nearbyStabilishmentsProps[]
-// }
-
 const searchSchema = z.object({
   search: z
     .string()
@@ -37,22 +30,27 @@ const searchSchema = z.object({
 
 type searchInput = z.infer<typeof searchSchema>
 
-export function Searchbar() {
+export function Searcher() {
   const [userLocation, setUserLocation] = useState<coordsType>()
   const [data, setData] = useState<addressObject>()
+
+  const router = useRouter()
+
+  const { nearbyEstablishmentsList } = useContext(SearchContext)
 
   const {
     register,
     handleSubmit,
+    watch,
     formState: { isSubmitting, errors },
   } = useForm<searchInput>({
     resolver: zodResolver(searchSchema),
   })
+  const watchSearch = watch('search')
 
   async function handleSearch(data: searchInput) {
     const { search } = data
-
-    console.log(search)
+    await router.push(`/results/${search}`)
   }
 
   useEffect(() => {
@@ -69,7 +67,6 @@ export function Searchbar() {
     } else {
       console.log('geoloc is not supp by this browser')
     }
-    console.log(data)
   }, [data])
 
   async function getLocal() {
@@ -85,29 +82,6 @@ export function Searchbar() {
       }
     }
   }
-
-  // const nearbyStabilishmentsList: nearbyStabilishmentsListProps = {
-  //   nearby: [
-  //     {
-  //       id: '1',
-  //       name: 'Barbeiro Um',
-  //       distance: 2,
-  //       photoUrl: 'link',
-  //     },
-  //     {
-  //       id: '2',
-  //       name: 'Barbeiro Dois',
-  //       distance: 2.5,
-  //       photoUrl: 'link',
-  //     },
-  //     {
-  //       id: '3',
-  //       name: 'Barbeiro Tres',
-  //       distance: 0.5,
-  //       photoUrl: 'link',
-  //     },
-  //   ],
-  // }
 
   return (
     <>
@@ -129,7 +103,7 @@ export function Searchbar() {
           <form onSubmit={handleSubmit(handleSearch)} className="w-[100%] flex">
             <input
               className="bg-input border-primary border-2  p-1 rounded-md w-[90%]"
-              placeholder="Procurar por barbearia..."
+              placeholder="Filtre ou encontre..."
               {...register('search')}
             />
             <button
@@ -148,27 +122,41 @@ export function Searchbar() {
             <></>
           )}
         </div>
-        {/* <div className="border w-[90%] absolute top-[9.6rem] bg-neutral-950 rounded-md">
-          {nearbyStabilishmentsList.nearby.map((stabilishment) => {
-            return (
-              <>
+        {watchSearch ? (
+          <div className="border w-[90%] absolute top-[9.6rem] bg-neutral-950 rounded-md">
+            {nearbyEstablishmentsList.nearby
+              .filter((establishment) =>
+                establishment.name
+                  .toLowerCase()
+                  .includes(watchSearch.toLowerCase()),
+              )
+              .map((establishment) => (
                 <div
-                  key={stabilishment.id}
+                  key={establishment.id}
                   className="flex w-[100%] gap-1 justify-between border border-primary p-3"
                 >
-                  <div className="w-[20%] bg-yellow-300 border"></div>
+                  <div className="w-[20%] border">
+                    <Image
+                      alt=""
+                      src={establishment.photoUrl}
+                      width={320}
+                      height={320}
+                    />
+                  </div>
                   <span className="w-[50%] flex items-center ">
-                    {stabilishment.name}
+                    {establishment.name}
                   </span>
                   <span className="flex items-center justify-center w-16 text-right">
-                    em {stabilishment.distance}km
+                    em {establishment.distance}km
                   </span>
                 </div>
-              </>
-            )
-          })}
-        </div> */}
+              ))}
+          </div>
+        ) : (
+          <></>
+        )}
       </div>
+      <Filters />
     </>
   )
 }
